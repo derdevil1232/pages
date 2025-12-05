@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox Hopper</title>
+  <script>
+    (function() {
+      const path = window.location.pathname.replace(/^\/+/, "");
+      if (!path) {
+        document.write("No placeId supplied");
+        return;
+      }
+
+      const placeId = encodeURIComponent(path);
+      const url = "roblox://experiences/start?placeId=" + placeId;
+
+      window.location.href = url;
+      setTimeout(() => window.close(), 150);
+    })();
+  </script>
+</head>
+<body></body>
+</html>
