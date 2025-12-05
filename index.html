@@ -5,17 +5,29 @@
   <title>Roblox Hopper</title>
   <script>
     (function() {
-      const path = window.location.pathname.replace(/^\/+/, "");
-      if (!path) {
+      const segments = window.location.pathname
+        .split("/")
+        .filter(Boolean);
+
+      if (segments.length === 0) {
         document.write("No placeId supplied");
         return;
       }
 
-      const placeId = encodeURIComponent(path);
-      const url = "roblox://experiences/start?placeId=" + placeId;
+      const placeId = segments[0];
+      const instanceId = segments[1] || null;
 
-      window.location.href = url;
-      setTimeout(() => window.close(), 150);
+      let robloxURL = "roblox://experiences/start?placeId=" + encodeURIComponent(placeId);
+
+      if (instanceId) {
+        robloxURL += "&gameInstanceId=" + encodeURIComponent(instanceId);
+      }
+
+      window.location.href = robloxURL;
+
+      setTimeout(() => {
+        try { window.close(); } catch(e) {}
+      }, 30000);
     })();
   </script>
 </head>
