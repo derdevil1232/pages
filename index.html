@@ -4,30 +4,32 @@
   <meta charset="UTF-8">
   <title>Roblox Hopper</title>
   <script>
-    (function() {
-      const segments = window.location.pathname
-        .split("/")
-        .filter(Boolean);
-
+    (function () {
+      const segments = window.location.pathname.split("/").filter(Boolean);
       if (segments.length === 0) {
         document.write("No placeId supplied");
         return;
       }
 
+      const params = new URLSearchParams(window.location.search);
+      const auto = params.get("auto") === "1";
+
       const placeId = segments[0];
       const instanceId = segments[1] || null;
 
       let robloxURL = "roblox://experiences/start?placeId=" + encodeURIComponent(placeId);
-
       if (instanceId) {
         robloxURL += "&gameInstanceId=" + encodeURIComponent(instanceId);
       }
 
       window.location.href = robloxURL;
 
-      setTimeout(() => {
-        try { window.close(); } catch(e) {}
-      }, 30000);
+      if (auto) {
+        setTimeout(() => {
+          window.open("", "_self");
+          window.close();
+        }, 30000);
+      }
     })();
   </script>
 </head>
