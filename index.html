@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <title>Roblox Hopper</title>
   <script>
+    // External call function
+    function launch(placeId, instanceId = null) {
+      let url = "https://robloxhopper.pages.dev/" + placeId;
+      if (instanceId) url += "/" + instanceId;
+      url += "?auto=1";
+      window.open(url, "_blank", "noopener");
+    }
+
+    // Auto-launch handling
     (function () {
       const segments = window.location.pathname.split("/").filter(Boolean);
       if (segments.length === 0) {
