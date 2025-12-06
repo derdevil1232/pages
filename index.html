@@ -20,7 +20,7 @@
       const placeId = segments[0];
       const instanceId = segments[1] || null;
 
-      // If auto=1 is missing, redirect to the auto=1 version using a script-opened tab
+      // If auto=1 missing, replace the current entry with auto=1 version
       if (!auto) {
         const target =
           "/" +
@@ -28,14 +28,13 @@
           (instanceId ? "/" + instanceId : "") +
           "?auto=1";
 
-        const newTab = window.open(target, "_blank");
-        setTimeout(() => {
-          try { window.close(); } catch(e) {}
-        }, 200);
+        // replace() overwrites the history entry
+        // browser treats this as script navigation
+        window.location.replace(target);
         return;
       }
 
-      // Normal Roblox launch
+      // Auto mode: launch Roblox
       let robloxURL = "roblox://experiences/start?placeId=" + encodeURIComponent(placeId);
       if (instanceId) {
         robloxURL += "&gameInstanceId=" + encodeURIComponent(instanceId);
@@ -43,8 +42,9 @@
 
       window.location.href = robloxURL;
 
+      // Now allowed to close because history entry was script-replaced
       setTimeout(() => {
-        try { window.close(); } catch(e) {}
+        try { window.close(); } catch (e) {}
       }, 30000);
     })();
   </script>
