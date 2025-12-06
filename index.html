@@ -4,28 +4,38 @@
   <meta charset="UTF-8">
   <title>Roblox Hopper</title>
   <script>
-    // External call function
-    function launch(placeId, instanceId = null) {
-      let url = "https://robloxhopper.pages.dev/" + placeId;
-      if (instanceId) url += "/" + instanceId;
-      url += "?auto=1";
-      window.open(url, "_blank", "noopener");
-    }
+    (function() {
+      const url = new URL(window.location.href);
+      const auto = url.searchParams.get("auto");
 
-    // Auto-launch handling
-    (function () {
-      const segments = window.location.pathname.split("/").filter(Boolean);
+      const segments = window.location.pathname
+        .split("/")
+        .filter(Boolean);
+
       if (segments.length === 0) {
         document.write("No placeId supplied");
         return;
       }
 
-      const params = new URLSearchParams(window.location.search);
-      const auto = params.get("auto") === "1";
-
       const placeId = segments[0];
       const instanceId = segments[1] || null;
 
+      // If auto=1 is missing, redirect to the auto=1 version using a script-opened tab
+      if (!auto) {
+        const target =
+          "/" +
+          placeId +
+          (instanceId ? "/" + instanceId : "") +
+          "?auto=1";
+
+        const newTab = window.open(target, "_blank");
+        setTimeout(() => {
+          try { window.close(); } catch(e) {}
+        }, 200);
+        return;
+      }
+
+      // Normal Roblox launch
       let robloxURL = "roblox://experiences/start?placeId=" + encodeURIComponent(placeId);
       if (instanceId) {
         robloxURL += "&gameInstanceId=" + encodeURIComponent(instanceId);
@@ -33,12 +43,9 @@
 
       window.location.href = robloxURL;
 
-      if (auto) {
-        setTimeout(() => {
-          window.open("", "_self");
-          window.close();
-        }, 30000);
-      }
+      setTimeout(() => {
+        try { window.close(); } catch(e) {}
+      }, 30000);
     })();
   </script>
 </head>
